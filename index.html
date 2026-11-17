@@ -1,0 +1,500 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Absensi - Kelas XI-3</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #eeeeee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 370px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        /* HEADER */
+
+        .header {
+            background: linear-gradient(135deg, #651b24, #922d38);
+            color: white;
+            padding: 17px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-icon {
+            font-size: 30px;
+        }
+
+        .header h2 {
+            font-size: 18px;
+        }
+
+        .header p {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-top: 3px;
+        }
+
+        /* CONTENT */
+
+        .content {
+            padding: 20px;
+        }
+
+        /* PROFILE */
+
+        .profile {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 13px;
+        }
+
+        .profile img {
+            width: 112px;
+            height: 112px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #eee3e3;
+            background: #eadada;
+        }
+
+        .student-name {
+            text-align: center;
+            font-size: 15px;
+            font-weight: 700;
+            color: #292929;
+            margin-bottom: 18px;
+        }
+
+        /* STATUS */
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .status-list {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 17px;
+        }
+
+        .status-option {
+            border: none;
+            border-radius: 8px;
+            padding: 10px 13px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            background: #424242;
+            transition: 0.2s;
+        }
+
+        .status-option:first-child {
+            background: #79232e;
+        }
+
+        .status-option .symbol {
+            width: 19px;
+            font-size: 19px;
+            text-align: center;
+        }
+
+        .status-option.selected {
+            outline: 3px solid #d6a0a5;
+            filter: brightness(1.15);
+            transform: scale(1.02);
+        }
+
+        /* UPLOAD */
+
+        .upload-box {
+            border: 2px dashed #aaa;
+            border-radius: 10px;
+            min-height: 105px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            cursor: pointer;
+            color: #777;
+            gap: 6px;
+            padding: 12px;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .upload-box:hover {
+            border-color: #812832;
+            background: #fff8f8;
+        }
+
+        .upload-icon {
+            font-size: 27px;
+        }
+
+        .upload-box p {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .upload-box small {
+            font-size: 10px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        #preview {
+            display: none;
+            max-width: 100%;
+            max-height: 140px;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+
+        /* BUTTON */
+
+        .submit-btn {
+            width: 100%;
+            background: #79232e;
+            color: white;
+            border: none;
+            padding: 13px;
+            margin-top: 13px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #571720;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* NOTIFICATION */
+
+        .notification {
+            display: none;
+            padding: 12px;
+            margin-top: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            text-align: center;
+            background: #e5f5e9;
+            color: #23753a;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+            padding: 0 15px 15px;
+        }
+
+        @media (max-width: 400px) {
+            body {
+                padding: 12px;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+
+        <div class="header">
+            <div class="header-icon">🎓</div>
+
+            <div>
+                <h2>QR Absensi</h2>
+                <p>Kelas XI-3</p>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- FOTO PROFIL -->
+
+            <div class="profile">
+                <img id="profileImage" src="" alt="Foto Profil">
+            </div>
+
+            <!-- NAMA SISWA -->
+
+            <div class="student-name" id="studentName"></div>
+
+            <!-- PILIH STATUS -->
+
+            <p class="section-title">
+                Pilih Status Kehadiran:
+            </p>
+
+            <div class="status-list">
+
+                <button class="status-option"
+                    onclick="selectStatus(this, 'Sakit')">
+
+                    <span class="symbol">✚</span>
+                    Sakit
+
+                </button>
+
+                <button class="status-option"
+                    onclick="selectStatus(this, 'Izin')">
+
+                    <span class="symbol">▦</span>
+                    Izin
+
+                </button>
+
+                <button class="status-option"
+                    onclick="selectStatus(this, 'Alfa')">
+
+                    <span class="symbol">✕</span>
+                    Alfa
+
+                </button>
+
+            </div>
+
+            <!-- UPLOAD BUKTI -->
+
+            <label class="upload-box" for="fileInput">
+
+                <span class="upload-icon">📷</span>
+
+                <p id="uploadText">
+                    Unggah Bukti & Foto
+                </p>
+
+                <small>JPG, PNG atau JPEG</small>
+
+                <img id="preview" alt="Preview foto">
+
+            </label>
+
+            <input
+                type="file"
+                id="fileInput"
+                accept="image/*"
+                onchange="previewImage(event)"
+            >
+
+            <!-- SUBMIT -->
+
+            <button class="submit-btn" onclick="submitAttendance()">
+                SUBMIT
+            </button>
+
+            <div class="notification" id="notification"></div>
+
+        </div>
+
+        <div class="footer">
+            Sistem Informasi Absensi Siswa
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // =====================================
+        // DATA SISWA
+        // =====================================
+
+        const siswa = {
+            nama: "muhammad revaldo",
+
+            // Isi dengan URL foto asli siswa.
+            // Kosongkan jika ingin menggunakan avatar inisial.
+            foto: ""
+        };
+
+
+        // =====================================
+        // UPDATE PROFIL OTOMATIS
+        // =====================================
+
+        function updateStudent() {
+
+            document.getElementById("studentName").innerText =
+                siswa.nama;
+
+            const profileImage =
+                document.getElementById("profileImage");
+
+            if (siswa.foto !== "") {
+
+                profileImage.src = siswa.foto;
+
+            } else {
+
+                profileImage.src =
+                    "https://ui-avatars.com/api/?name=" +
+                    encodeURIComponent(siswa.nama) +
+                    "&background=78232e&color=ffffff&size=200";
+
+            }
+        }
+
+        // Tampilkan profil saat website dibuka
+        updateStudent();
+
+
+        // =====================================
+        // PILIH STATUS KEHADIRAN
+        // =====================================
+
+        let selectedStatus = "";
+
+        function selectStatus(element, status) {
+
+            document.querySelectorAll(".status-option")
+                .forEach(button => {
+                    button.classList.remove("selected");
+                });
+
+            element.classList.add("selected");
+
+            selectedStatus = status;
+
+        }
+
+
+        // =====================================
+        // PREVIEW FOTO
+        // =====================================
+
+        function previewImage(event) {
+
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            if (!file.type.startsWith("image/")) {
+                alert("File harus berupa gambar!");
+                event.target.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+
+                const preview =
+                    document.getElementById("preview");
+
+                preview.src = e.target.result;
+                preview.style.display = "block";
+
+                document.getElementById("uploadText").innerText =
+                    file.name;
+
+            };
+
+            reader.readAsDataURL(file);
+
+        }
+
+
+        // =====================================
+        // SUBMIT ABSENSI
+        // =====================================
+
+        function submitAttendance() {
+
+            const notification =
+                document.getElementById("notification");
+
+            const file =
+                document.getElementById("fileInput").files[0];
+
+            if (!selectedStatus) {
+
+                alert("Silakan pilih status kehadiran!");
+                return;
+
+            }
+
+            if (
+                (selectedStatus === "Sakit" ||
+                 selectedStatus === "Izin") && !file
+            ) {
+
+                alert("Silakan unggah bukti foto terlebih dahulu!");
+                return;
+
+            }
+
+            const attendanceData = {
+
+                nama: siswa.nama,
+
+                kelas: "XI-3",
+
+                status: selectedStatus,
+
+                waktu: new Date().toLocaleString("id-ID")
+
+            };
+
+            console.log("DATA ABSENSI:", attendanceData);
+
+            notification.style.display = "block";
+
+            notification.innerHTML =
+                "✓ Absensi berhasil dicatat!<br>" +
+                "Nama: " + siswa.nama + "<br>" +
+                "Status: " + selectedStatus;
+
+        }
+
+    </script>
+
+</body>
+</html>
